@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import ru.dab.PP_3_1_3_MVC_Boot_Security_Bootstrap.service.UserDetailsServiceImpl;
 
 
 @Configuration
@@ -21,11 +21,11 @@ public class WebSecurityConfig {
         this.successUserHandler = successUserHandler;
     }
 
-    private UserDetailsServiceImpl userDetailsServiceImpl;
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    public void setUserService(UserDetailsServiceImpl userDetailsServiceImpl) {
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    public void setUserDetailsService(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
 
@@ -33,10 +33,10 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/hello").permitAll() // доступно всем
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // доступ к /admin только для пользователей с ролью admin
+                        .requestMatchers("/", "/index").permitAll() // доступно всем
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN") // доступ к /admin только для пользователей с ролью admin
                         //.requestMatchers("/user").hasAnyRole("USER", "ADMIN") // доступ к /user для ролей user и admin
-                        .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/user/user").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated() // все остальные запросы требуют аутентификации
                 )
                 .formLogin((form) -> form
@@ -82,7 +82,7 @@ public class WebSecurityConfig {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setPasswordEncoder(passwordEncoder()); // назначили passwordEncoder из метода ниже
 
-        authenticationProvider.setUserDetailsService(userDetailsServiceImpl); // назначили setUserDetailsService чтобы предоставить юзера либо проверить его наличие
+        authenticationProvider.setUserDetailsService(userDetailsService); // назначили setUserDetailsService чтобы предоставить юзера либо проверить его наличие
 
         return authenticationProvider;
     }

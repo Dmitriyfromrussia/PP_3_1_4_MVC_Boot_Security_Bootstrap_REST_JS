@@ -11,76 +11,123 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "users", uniqueConstraints=
-@UniqueConstraint(columnNames={"name"}))
-@Data
-
-//@ToString(exclude = "roles") //// Исключаем roles, чтобы избежать рекурсии
-public class User implements UserDetails { // UserDetails стандартизированный интерфейс
+@Table(name = "users")
+public class User implements UserDetails {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
-    //имя юзера должно быть уникально (аннотация @Uniq или первичный ключ)
     @Column(name = "name")
-    @NotBlank(message = "Имя не может быть пустым")
-    @Size(min = 2, max = 15, message = "Имя должно быть между 2 и 15 символами в длину")
-    private String username;
+    private String name;
 
-    @Column(name = "age")
-    @Min(value = 18, message = "Возраст должен быть больше 18")
-    private int userAge;
+    @Column(name = "surname")
+    private String surname;
 
     @Column(name = "email")
-    @Email(message = "введите корректный email")
-    private String userEmail;
+    private String email;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "password")
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-            //cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "users_roles",
+    @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    //@NotBlank(message = "Необходимо выбрать роль")
     private Set<Role> roles;
-
 
     public User() {
     }
-//
-//    public User(Long userId, String username, int userAge, String userEmail, String password, Set<Role> roles) {
-//        this.userId = userId;
-//        this.username = username;
-//        this.userAge = userAge;
-//        this.userEmail = userEmail;
-//        this.password = password;
-//        this.roles = roles;
-//    }
-//
-    public User(String username, int userAge, String userEmail, String password, Set<Role> roles) {
+
+    public User(Long id, String name, String surname, String email, String username, String password, Set<Role> roles) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
         this.username = username;
-        this.userAge = userAge;
-        this.userEmail = userEmail;
         this.password = password;
         this.roles = roles;
+    }
+
+    public User(String name, String surname, String email, String username, String password, Set<Role> roles) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public Set<Role> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
     }
 
     @Override
@@ -104,30 +151,31 @@ public class User implements UserDetails { // UserDetails стандартизи
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("password='").append(password).append('\'');
-        sb.append(", userId=").append(userId);
-        sb.append(", username='").append(username).append('\'');
-        sb.append(", userAge=").append(userAge);
-        sb.append(", userEmail='").append(userEmail).append('\'');
-        sb.append(", roles=").append(roles);
-        sb.append('}');
-        return sb.toString();
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(name, user.name)
+                && Objects.equals(surname, user.surname) && Objects.equals(email, user.email)
+                && Objects.equals(username, user.username) && Objects.equals(password, user.password)
+                && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, email, username, password, roles);
     }
 }

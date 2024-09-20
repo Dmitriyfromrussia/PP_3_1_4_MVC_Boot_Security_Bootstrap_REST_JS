@@ -1,134 +1,54 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Login</title>
-    <style>
-        /* Общий стиль для body */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5; /* Цвет фона */
-            display: flex;
-            justify-content: center; /* Центровка по горизонтали */
-            align-items: center; /* Центровка по вертикали */
-            height: 100vh; /* Высота экрана */
-            margin: 0;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        /* Стиль для контейнера формы */
-        .login-container {
-            background-color: white; /* Цвет фона формы */
-            padding: 30px;
-            border-radius: 10px; /* Скругленные углы */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Тень */
-            width: 300px; /* Ширина формы */
-        }
+    <title>Please Log In</title>
 
-        /* Стиль для заголовка формы */
-        .login-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        /* Стиль для элементов формы */
-        .login-container div {
-            margin-bottom: 15px;
-        }
-
-        .login-container label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        /* Стиль для кнопок */
-        .login-container input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50; /* Зеленый цвет */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .login-container input[type="submit"]:hover {
-            background-color: #45a049; /* Темнее зеленый при наведении */
-        }
-
-        /* Стиль для сообщений об ошибках */
-        .error-message {
-            color: red;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .logout-message {
-            color: green;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-    </style>
+    <!--    Bootstrap CSS-->
+    <!--    Bootstrap 4.6.2 CSS-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/style.css">
 </head>
-<body>
-<div class="login-container">
-    <h2>Login</h2>
-    <div th:if="${param.error}" class="error-message">
-        Invalid username and password.
+<body class="user-login-body background-color-azure">
+<form th:action="@{/login}" method="post" autocomplete="off">
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+                <form>
+                    <h3 class="h3 mb-1 text-center">Please sign in!</h3>
+                    <input class="form-control mb-1 active" type="text" id="username" name="username" placeholder="Username">
+                    <input class="form-control mb-1" type="password" id="password" name="password" placeholder="Password">
+                    <div th:if="${param.error}">
+                        Invalid username and password.
+                    </div>
+                    <div th:if="${param.logout}">
+                        You have been logged out.
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" type="submit">Sign In</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
     </div>
-    <div th:if="${param.logout}" class="logout-message">
-        You have been logged out.
-    </div>
-    <form th:action="@{/login}" method="post">
-        <div>
-            <label for="username">User Name:</label>
-            <input type="text" id="username" name="username"/>
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password"/>
-        </div>
-        <div>
-            <input type="submit" value="Sign In"/>
-        </div>
-    </form>
-    <form th:action="@{/logout}" method="get">
-        <input type="submit" value="Logout"/>
-    </form>
-</div>
+</form>
+
+<!--BootsTrap 4.6.2 JS-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
+        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
+        crossorigin="anonymous"></script>
 </body>
 </html>
-
-<!--<!DOCTYPE html>-->
-<!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">-->
-<!--<head>-->
-<!--    <title>Spring Security Example </title>-->
-<!--</head>-->
-<!--<body>-->
-<!--<div th:if="${param.error}">-->
-<!--    Invalid username and password.-->
-<!--</div>-->
-<!--<div th:if="${param.logout}">-->
-<!--    You have been logged out.-->
-<!--</div>-->
-<!--<form th:action="@{/login}" method="post">-->
-<!--    <div><label> User Name : <input type="text" name="username"/> </label></div>-->
-<!--    <div><label> Password: <input type="password" name="password"/> </label></div>-->
-<!--    <div><input type="submit" value="Sign In"/></div>-->
-<!--</form>-->
-
-<!--<form th:action="@{/logout}" method="get">-->
-<!--    <input type="submit" value="Logout" />-->
-<!--</form>-->
-<!--</body>-->
-<!--</html>-->

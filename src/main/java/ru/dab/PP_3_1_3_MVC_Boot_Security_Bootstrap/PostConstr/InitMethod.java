@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dab.PP_3_1_3_MVC_Boot_Security_Bootstrap.models.Role;
 import ru.dab.PP_3_1_3_MVC_Boot_Security_Bootstrap.models.User;
-import ru.dab.PP_3_1_3_MVC_Boot_Security_Bootstrap.service.UserService;
+import ru.dab.PP_3_1_3_MVC_Boot_Security_Bootstrap.services.UserService;
 
 
 import java.util.HashSet;
@@ -16,30 +16,26 @@ import java.util.Set;
 public class InitMethod {
 
 
-    private final UserService userService;
-
     @Autowired
-    public InitMethod(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
     @PostConstruct
     @Transactional
     public void init() {
+        // Создание ролей
+        Role userRole = new Role("USER");
+        Role adminRole = new Role("ADMIN");
 
+        // Создание user
+        Set<Role> userRoleList = new HashSet<>();
+        userRoleList.add(userRole);
+        User regularUser = new User("user", "user", "user@mail.ru", "user", "user", userRoleList);
+        userService.create(regularUser);
 
-
-        Role userRole = new Role("ROLE_USER");
-        Set<Role> usersRoleList = new HashSet<>();
-        usersRoleList.add(userRole);
-        User defaultUser = new User("user", 37, "user@mail.ru", "user", usersRoleList);
-        userService.create(defaultUser);
-
-
-        Role adminRole = new Role("ROLE_ADMIN");
-        Set <Role> adminRoleList = new HashSet<>();
+        // Создание admin
+        Set<Role> adminRoleList = new HashSet<>();
         adminRoleList.add(adminRole);
-        User defaultAdmin = new User("admin", 38, "admin@mail.ru", "admin", adminRoleList);
-        userService.create(defaultAdmin);
+        User adminUser = new User("admin", "admin", "admin@mail.ru", "admin", "admin", adminRoleList);
+        userService.create(adminUser);
     }
 }
