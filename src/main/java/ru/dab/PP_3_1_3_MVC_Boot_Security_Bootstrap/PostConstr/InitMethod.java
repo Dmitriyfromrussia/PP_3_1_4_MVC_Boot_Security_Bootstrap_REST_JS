@@ -39,8 +39,8 @@ public class InitMethod {
         // Создание user
         User regularUser = new User();
         regularUser.setUsername("user");
-        regularUser.setFirstName("user_firstname");
-        regularUser.setLastName("user_lastname");
+        regularUser.setFirstName("firstname");
+        regularUser.setLastName("lastname");
         regularUser.setPassword(bCryptPasswordEncoder.encode("user"));
         regularUser.setRoles(new HashSet<>(Arrays.asList(userRole)));
         userRepository.save(regularUser);

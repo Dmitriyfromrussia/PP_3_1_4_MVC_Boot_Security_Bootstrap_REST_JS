@@ -32,6 +32,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf().disable() // Отключаем CSRF
                 .authorizeHttpRequests((requests) -> requests
                         //.requestMatchers("/", "/index").permitAll() // доступно всем
                         .requestMatchers("/admin/**").hasRole("ADMIN") // доступ к /admin только для пользователей с ролью admin
