@@ -1,6 +1,5 @@
 package ru.dab.PP_3_1_3_MVC_Boot_Security_Bootstrap.services;
 
-import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,8 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
@@ -22,8 +21,8 @@ public class UserServiceImpl implements UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @Override
     @Transactional
+    @Override
     public void create(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -32,15 +31,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void update(User user) {
-        User user1 = userRepository.getUserById(user.getId());
-        if(user1 != null) {
-            if(!user1.getPassword().equals(user.getPassword())) {
-                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            }
-            userRepository.save(user);
-        } else {
-            throw new EntityExistsException(String.format("User with id=%s not found", user.getId()));
+        User existingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!user.getPassword().equals(existingUser.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
+        userRepository.save(user);
     }
 
     @Override
@@ -51,25 +47,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getById(Long id) {
-        return userRepository.getById(id);
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public User getByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<User> findAllUsers() {
+    public List<User> listUsers() {
         return userRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean isUserExist(User user) {
-        return userRepository.findByUsername(user.getUsername()) != null; //сли юзер есть - true
     }
 }

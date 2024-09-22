@@ -33,15 +33,15 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/index").permitAll() // доступно всем
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN") // доступ к /admin только для пользователей с ролью admin
+                        //.requestMatchers("/", "/index").permitAll() // доступно всем
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // доступ к /admin только для пользователей с ролью admin
                         //.requestMatchers("/user").hasAnyRole("USER", "ADMIN") // доступ к /user для ролей user и admin
-                        .requestMatchers("/user/user").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
                         .anyRequest().authenticated() // все остальные запросы требуют аутентификации
                 )
                 .formLogin((form) -> form
 
-                        .loginPage("/login")
+                        //.loginPage("/login")
                         .successHandler(successUserHandler) // обрабатываем успешный логин эту строку можно убрать
                         .permitAll()
                 )

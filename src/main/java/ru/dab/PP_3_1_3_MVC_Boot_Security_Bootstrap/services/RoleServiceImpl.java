@@ -6,13 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.dab.PP_3_1_3_MVC_Boot_Security_Bootstrap.models.Role;
 import ru.dab.PP_3_1_3_MVC_Boot_Security_Bootstrap.repositories.RoleRepository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Service
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl implements RoleService{
 
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
     public RoleServiceImpl(RoleRepository roleRepository) {
@@ -21,9 +20,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Role> findAllRoles() {
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.addAll(roleRepository.findAll());
-        return roleSet;
+    public List<Role> listRoles() {
+        return roleRepository.findAll();
     }
 }
